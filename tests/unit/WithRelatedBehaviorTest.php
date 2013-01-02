@@ -146,5 +146,13 @@ class WithRelatedBehaviorTest extends CDbTestCase
 		$this->assertEquals('tag2 update',$article->tags[1]->name);
 		$this->assertEquals('tag3',$article->tags[2]->name);
 		$this->assertEquals('tag4',$article->tags[3]->name);
+
+		$article=Article::model()->with('user','user.group')->find();
+		$this->assertNotNull($article->user->group_id);
+		$article->user->group=null;
+		$article->withRelated->save(true,array('user'=>array('group')));
+
+		$user=User::model()->find();
+		$this->assertNull($user->group_id);
 	}
 }
